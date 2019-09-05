@@ -1,5 +1,6 @@
 package ru.pelmegov.desktop;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import ru.pelmegov.GdxGame;
@@ -12,7 +13,7 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = configureApp();
 
         try {
-            new LwjglApplication(new GdxGame(), config);
+            new LwjglApplication(new GdxGame(Application.LOG_DEBUG), config);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, prepareErrorMessage(e));
             System.exit(0);
