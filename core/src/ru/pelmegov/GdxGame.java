@@ -1,23 +1,27 @@
 package ru.pelmegov;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import ru.pelmegov.screen.menu.MenuScreen;
 
-public class GdxGame extends ApplicationAdapter {
+import static ru.pelmegov.util.Constant.DEFAULT_LOG_LEVEL;
 
-    private final static int DEFAULT_LOG_LEVEL = Application.LOG_NONE;
+public class GdxGame extends Game {
+
+    private final int logLevel;
 
     public GdxGame() {
-        Gdx.app.setLogLevel(DEFAULT_LOG_LEVEL);
+        this.logLevel = DEFAULT_LOG_LEVEL;
     }
 
     public GdxGame(int logLevel) {
-        Gdx.app.setLogLevel(logLevel);
+        this.logLevel = logLevel;
     }
 
     @Override
     public void create() {
+        Gdx.app.setLogLevel(logLevel);
+        setScreen(new MenuScreen());
     }
 
     @Override
