@@ -1,8 +1,8 @@
 package ru.pelmegov.screen.game;
 
-import com.badlogic.gdx.Screen;
+import ru.pelmegov.screen.AbstractScreen;
 
-public class GameScreen implements Screen {
+public class GameScreen extends AbstractScreen {
 
     @Override
     public void show() {
