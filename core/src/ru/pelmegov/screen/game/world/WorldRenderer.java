@@ -77,12 +77,12 @@ public class WorldRenderer implements Disposable {
         batch.begin();
 
         renderGround();
-        renderPlayer();
+        renderPlayers();
 
         batch.end();
     }
 
-    private void renderPlayer() {
+    private void renderPlayers() {
         // todo refactoring draw all players
         Sprite player = playerAnimation.getSprite(playerKeyboard.getDirectionKeyPressed(this.player));
         player.setPosition(this.player.getPosition().x - PLAYER_WIDTH, this.player.getPosition().y - PLAYER_HEIGHT);
@@ -92,7 +92,9 @@ public class WorldRenderer implements Disposable {
         gameProcessScreen.world.step(1 / 60f, 6, 5);
 
         // todo refactoring move camera
-        gameProcessScreen.worldCamera.position.set(new Vector3(this.player.getPosition().x, this.player.getPosition().y, 0));
+        Vector3 playerMovement = new Vector3(this.player.getPosition().x, this.player.getPosition().y, 0);
+
+        gameProcessScreen.worldCamera.position.set(playerMovement);
         gameProcessScreen.worldCamera.update();
     }
 
