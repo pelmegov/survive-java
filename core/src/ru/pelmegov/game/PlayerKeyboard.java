@@ -12,25 +12,23 @@ public class PlayerKeyboard {
     public Direction getDirectionKeyPressed(Body player) {
         Direction direction = null;
 
-        int speed = 100;
-
         int horizontalForce = 0;
         int verticalForce = 0;
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            horizontalForce -= speed;
+            horizontalForce -= 1;
             direction = Direction.LEFT;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            horizontalForce += speed;
+            horizontalForce += 1;
             direction = Direction.RIGHT;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            verticalForce += speed;
+            verticalForce += 1;
             direction = Direction.UP;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            verticalForce -= speed;
+            verticalForce -= 1;
             direction = Direction.DOWN;
         }
 

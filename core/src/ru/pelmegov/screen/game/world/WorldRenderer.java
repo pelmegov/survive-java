@@ -5,16 +5,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Disposable;
-import ru.pelmegov.game.Direction;
 import ru.pelmegov.game.PlayerKeyboard;
+import ru.pelmegov.game.player.Player;
 import ru.pelmegov.graphic.animation.PlayerAnimation;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
 import ru.pelmegov.screen.game.GameProcessScreen;
 
+import static ru.pelmegov.game.player.Player.PLAYER_HEIGHT;
+import static ru.pelmegov.game.player.Player.PLAYER_WIDTH;
 import static ru.pelmegov.graphic.sprite.SpriteName.GRASS_1;
 import static ru.pelmegov.graphic.sprite.SpriteName.PLAYER_1;
 import static ru.pelmegov.util.Constant.TILE_SIZE_PIXELS;
@@ -58,8 +59,8 @@ public class WorldRenderer implements Disposable {
         Sprite sprite = new Sprite(texture);
         SpriteContainer.getInstance().addSprite(PLAYER_1, sprite);
 
-        playerAnimation = new PlayerAnimation(texture);
-        player = playerAnimation.createPlayer(gameProcessScreen.world);
+        playerAnimation = new PlayerAnimation(sprite);
+        player = Player.createPlayer(gameProcessScreen.world);
         playerKeyboard = new PlayerKeyboard();
     }
 
@@ -82,17 +83,16 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderPlayer() {
-        Direction direction = playerKeyboard.getDirectionKeyPressed(player);
-        TextureRegion playerTextureByDirection = playerAnimation.getTexture(direction);
-        batch.draw(playerTextureByDirection, player.getPosition().x - 32, player.getPosition().y - 24);
+        // todo refactoring draw all players
+        Sprite player = playerAnimation.getSprite(playerKeyboard.getDirectionKeyPressed(this.player));
+        player.setPosition(this.player.getPosition().x - PLAYER_WIDTH, this.player.getPosition().y - PLAYER_HEIGHT);
+        player.draw(batch);
 
-        gameProcessScreen.world.step(1 / 60f, 6, 2);
+        // todo refactoring move world
+        gameProcessScreen.world.step(1 / 60f, 6, 5);
 
-        Vector3 position = gameProcessScreen.worldCamera.position;
-        position.x = player.getPosition().x;
-        position.y = player.getPosition().y;
-        gameProcessScreen.worldCamera.position.set(position);
-
+        // todo refactoring move camera
+        gameProcessScreen.worldCamera.position.set(new Vector3(this.player.getPosition().x, this.player.getPosition().y, 0));
         gameProcessScreen.worldCamera.update();
     }
 
