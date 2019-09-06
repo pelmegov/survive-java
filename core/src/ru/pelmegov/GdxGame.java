@@ -3,7 +3,7 @@ package ru.pelmegov;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import ru.pelmegov.screen.ScreenName;
-import ru.pelmegov.screen.game.GameScreen;
+import ru.pelmegov.screen.game.GameProcessScreen;
 import ru.pelmegov.screen.menu.MenuScreen;
 import ru.pelmegov.util.GameHolder;
 
@@ -47,12 +47,13 @@ public class GdxGame extends Game {
         switch (screenName) {
             case START_GAME:
                 startGame();
+                break;
             default:
                 throw new IllegalArgumentException();
         }
     }
 
     private void startGame() {
-        setScreen(new GameScreen());
+        setScreen(new GameProcessScreen());
     }
 }

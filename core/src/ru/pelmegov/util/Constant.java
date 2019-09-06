@@ -11,6 +11,8 @@ public class Constant {
     public final static int BUTTONS_PADDING = 10;
     public final static int BUTTONS_ROW_PADDING = 2;
 
+    public final static int TILE_SIZE_PIXELS = 256;
+
     private Constant() {
         throw new UnsupportedOperationException();
     }
