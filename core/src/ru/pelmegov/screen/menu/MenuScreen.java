@@ -19,8 +19,8 @@ public class MenuScreen extends AbstractScreen {
         this.stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        this.initialize();
-        this.initializeWindows();
+        this.initializeSkin();
+        this.initializeMenuWindow();
     }
 
     @Override
@@ -52,25 +52,24 @@ public class MenuScreen extends AbstractScreen {
     public void dispose() {
     }
 
-    private void initialize() {
-        this.initializeSkin();
-    }
-
+    /**
+     * Method prepare skin for next usage
+     */
     private void initializeSkin() {
         this.skin = new Skin(
                 Gdx.files.internal("layout/skin.json"),
-                new TextureAtlas("layout/skin.atlas"));
+                new TextureAtlas("layout/skin.atlas")
+        );
     }
 
-    private void initializeWindows() {
+    /**
+     * Method prepare and initialize menu window inside screen
+     */
+    private void initializeMenuWindow() {
         this.stage.clear();
-        this.initializeMainMenuWindow();
-    }
-
-    private void initializeMainMenuWindow() {
-        MainMenu mainMenuWindow = new MainMenu(skin, this);
-        mainMenuWindow.setVisible(true);
-        this.stage.addActor(mainMenuWindow);
+        this.stage.addActor(
+                new MainMenu(skin, this, true)
+        );
     }
 
 }

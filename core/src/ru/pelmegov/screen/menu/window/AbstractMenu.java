@@ -9,11 +9,15 @@ public abstract class AbstractMenu extends Window {
     protected MenuScreen menuScreen;
     protected Skin skin;
 
-    public AbstractMenu(String title, Skin skin, MenuScreen menuScreen) {
+    public AbstractMenu(String title, Skin skin, MenuScreen menuScreen, boolean visible) {
         super(title, skin);
 
         this.skin = skin;
         this.menuScreen = menuScreen;
+
+        initialize();
+
+        setVisible(visible);
     }
 
     protected abstract void initialize();
