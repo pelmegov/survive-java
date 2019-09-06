@@ -6,16 +6,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Disposable;
+import ru.pelmegov.game.GameContext;
 import ru.pelmegov.game.PlayerKeyboard;
 import ru.pelmegov.game.player.Player;
 import ru.pelmegov.graphic.animation.PlayerAnimation;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
-import ru.pelmegov.screen.game.GameProcessScreen;
 
-import static ru.pelmegov.game.player.Player.PLAYER_HEIGHT;
-import static ru.pelmegov.game.player.Player.PLAYER_WIDTH;
+import java.util.List;
+
 import static ru.pelmegov.graphic.sprite.SpriteName.GRASS_1;
 import static ru.pelmegov.graphic.sprite.SpriteName.PLAYER_1;
 import static ru.pelmegov.util.Constant.TILE_SIZE_PIXELS;
@@ -23,14 +22,10 @@ import static ru.pelmegov.util.Constant.TILE_SIZE_PIXELS;
 public class WorldRenderer implements Disposable {
 
     private SpriteBatch batch;
-    private GameProcessScreen gameProcessScreen;
-    private PlayerAnimation playerAnimation;
-    private PlayerKeyboard playerKeyboard;
-    private Body player;
+    private GameContext gameContext;
 
-    public WorldRenderer(GameProcessScreen gameProcessScreen) {
-        this.gameProcessScreen = gameProcessScreen;
-
+    public WorldRenderer(GameContext gameContext) {
+        this.gameContext = gameContext;
         initialize();
     }
 
@@ -59,9 +54,7 @@ public class WorldRenderer implements Disposable {
         Sprite sprite = new Sprite(texture);
         SpriteContainer.getInstance().addSprite(PLAYER_1, sprite);
 
-        playerAnimation = new PlayerAnimation(sprite);
-        player = Player.createPlayer(gameProcessScreen.world);
-        playerKeyboard = new PlayerKeyboard();
+        gameContext.addPlayer(new Player(gameContext.getWorld(), new PlayerAnimation(sprite), new PlayerKeyboard()));
     }
 
     private void initializeBatches() {
@@ -72,30 +65,40 @@ public class WorldRenderer implements Disposable {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.setProjectionMatrix(gameProcessScreen.worldCamera.combined);
+        batch.setProjectionMatrix(gameContext.getWorldCamera().combined);
 
         batch.begin();
 
         renderGround();
         renderPlayers();
+        renderWorld();
+        renderCamera();
 
         batch.end();
     }
 
+    private void renderWorld() {
+        gameContext.getWorld().step(1 / 60f, 6, 5);
+    }
+
+    private void renderCamera() {
+        gameContext.getWorldCamera().update();
+    }
+
     private void renderPlayers() {
-        // todo refactoring draw all players
-        Sprite player = playerAnimation.getSprite(playerKeyboard.getDirectionKeyPressed(this.player));
-        player.setPosition(this.player.getPosition().x - PLAYER_WIDTH, this.player.getPosition().y - PLAYER_HEIGHT);
-        player.draw(batch);
+        List<Player> allPlayers = gameContext.getAllPlayers();
 
-        // todo refactoring move world
-        gameProcessScreen.world.step(1 / 60f, 6, 5);
+        for (Player player : allPlayers) {
+            Sprite sprite = player.draw();
+            sprite.draw(batch);
 
-        // todo refactoring move camera
-        Vector3 playerMovement = new Vector3(this.player.getPosition().x, this.player.getPosition().y, 0);
+            Vector3 playerMovement = new Vector3(
+                    player.getBody().getPosition().x,
+                    player.getBody().getPosition().y, 0
+            );
 
-        gameProcessScreen.worldCamera.position.set(playerMovement);
-        gameProcessScreen.worldCamera.update();
+            gameContext.getWorldCamera().position.set(playerMovement);
+        }
     }
 
     private void renderGround() {

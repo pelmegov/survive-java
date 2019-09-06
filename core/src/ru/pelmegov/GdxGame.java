@@ -2,6 +2,7 @@ package ru.pelmegov;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import ru.pelmegov.game.GameContext;
 import ru.pelmegov.screen.ScreenName;
 import ru.pelmegov.screen.game.GameProcessScreen;
 import ru.pelmegov.screen.menu.MenuScreen;
@@ -15,6 +16,8 @@ public class GdxGame extends Game {
 
     private boolean paused = false;
 
+    private GameContext gameContext;
+
     public GdxGame() {
         this.logLevel = DEFAULT_LOG_LEVEL;
     }
@@ -26,9 +29,10 @@ public class GdxGame extends Game {
     @Override
     public void create() {
         GameHolder.putGameInstance(this);
-
         Gdx.app.setLogLevel(logLevel);
-        setScreen(new MenuScreen());
+
+        this.gameContext = new GameContext();
+        this.setScreen(new MenuScreen());
     }
 
     @Override
@@ -54,6 +58,6 @@ public class GdxGame extends Game {
     }
 
     private void startGame() {
-        setScreen(new GameProcessScreen());
+        setScreen(new GameProcessScreen(gameContext));
     }
 }

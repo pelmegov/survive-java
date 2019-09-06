@@ -8,7 +8,6 @@ import static ru.pelmegov.graphic.animation.PlayerAnimation.PLAYER_DEFAULT_SPEED
 
 public class PlayerKeyboard {
 
-
     public Direction getDirectionKeyPressed(Body player) {
         Direction direction = null;
 
