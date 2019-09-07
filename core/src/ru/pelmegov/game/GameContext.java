@@ -4,23 +4,27 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import ru.pelmegov.game.player.Player;
+import ru.pelmegov.network.GameClient;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class GameContext {
 
     private World world;
     private Box2DDebugRenderer b2dr;
     private OrthographicCamera worldCamera;
+    private GameClient gameClient;
 
-    private List<Player> players = new ArrayList<>();
+    private Player currentPlayer;
+    private Set<Player> players = new CopyOnWriteArraySet<>();
 
     public void addPlayer(Player player) {
+        players.remove(player);
         players.add(player);
     }
 
-    public List<Player> getAllPlayers() {
+    public Set<Player> getAllPlayers() {
         return players;
     }
 
@@ -49,5 +53,21 @@ public class GameContext {
 
     public void setB2dr(Box2DDebugRenderer b2dr) {
         this.b2dr = b2dr;
+    }
+
+    public GameClient getGameClient() {
+        return gameClient;
+    }
+
+    public void setGameClient(GameClient gameClient) {
+        this.gameClient = gameClient;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 }

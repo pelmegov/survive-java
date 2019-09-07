@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import ru.pelmegov.game.GameContext;
+import ru.pelmegov.network.GameClient;
 import ru.pelmegov.screen.AbstractScreen;
 import ru.pelmegov.screen.game.world.WorldRenderer;
 
@@ -24,6 +25,7 @@ public class GameProcessScreen extends AbstractScreen {
         initializeWorldRenderer();
         initializeCamera();
         initializeInputManagers();
+        initializeGameClient();
     }
 
     @Override
@@ -71,6 +73,10 @@ public class GameProcessScreen extends AbstractScreen {
     }
 
     private void initializeInputManagers() {
+    }
+
+    private void initializeGameClient() {
+        gameContext.setGameClient(new GameClient(gameContext));
     }
 
 }

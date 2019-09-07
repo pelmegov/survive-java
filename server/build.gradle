@@ -1,0 +1,8 @@
+sourceCompatibility = 1.8
+
+task addSource {
+    doLast {
+        sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJava.srcDirs)
+    }
+}
+tasks.compileJava.dependsOn(addSource)

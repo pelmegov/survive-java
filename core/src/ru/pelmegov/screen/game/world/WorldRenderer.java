@@ -5,16 +5,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
+import ru.pelmegov.game.Direction;
 import ru.pelmegov.game.GameContext;
-import ru.pelmegov.game.PlayerKeyboard;
 import ru.pelmegov.game.player.Player;
-import ru.pelmegov.graphic.animation.PlayerAnimation;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
 
-import java.util.List;
+import java.util.Iterator;
 
+import static ru.pelmegov.game.player.Player.PLAYER_HEIGHT;
+import static ru.pelmegov.game.player.Player.PLAYER_WIDTH;
 import static ru.pelmegov.graphic.sprite.SpriteName.GRASS_1;
 import static ru.pelmegov.graphic.sprite.SpriteName.PLAYER_1;
 import static ru.pelmegov.util.Constant.TILE_SIZE_PIXELS;
@@ -54,7 +55,7 @@ public class WorldRenderer implements Disposable {
         Sprite sprite = new Sprite(texture);
         SpriteContainer.getInstance().addSprite(PLAYER_1, sprite);
 
-        gameContext.addPlayer(new Player(gameContext.getWorld(), new PlayerAnimation(sprite), new PlayerKeyboard()));
+        gameContext.setCurrentPlayer(new Player(gameContext.getWorld(), sprite));
     }
 
     private void initializeBatches() {
@@ -77,30 +78,6 @@ public class WorldRenderer implements Disposable {
         batch.end();
     }
 
-    private void renderWorld() {
-        gameContext.getWorld().step(1 / 60f, 6, 5);
-    }
-
-    private void renderCamera() {
-        gameContext.getWorldCamera().update();
-    }
-
-    private void renderPlayers() {
-        List<Player> allPlayers = gameContext.getAllPlayers();
-
-        for (Player player : allPlayers) {
-            Sprite sprite = player.draw();
-            sprite.draw(batch);
-
-            Vector3 playerMovement = new Vector3(
-                    player.getBody().getPosition().x,
-                    player.getBody().getPosition().y, 0
-            );
-
-            gameContext.getWorldCamera().position.set(playerMovement);
-        }
-    }
-
     private void renderGround() {
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 100; j++) {
@@ -109,6 +86,48 @@ public class WorldRenderer implements Disposable {
                 sprite.draw(batch);
             }
         }
+    }
+
+    private void renderPlayers() {
+        Player currentPlayer = gameContext.getCurrentPlayer();
+        Direction direction = currentPlayer.getPlayerKeyboard().getDirectionKeyPressed();
+        Sprite currentPlayerSprite = currentPlayer.draw(direction);
+
+        float x = currentPlayer.getBody().getPosition().x;
+        float y = currentPlayer.getBody().getPosition().y;
+        currentPlayerSprite.setPosition(x - PLAYER_WIDTH, y - PLAYER_HEIGHT);
+
+        Vector2 playerMovement = new Vector2(x, y);
+
+        // send movements by tcp
+        gameContext.getGameClient().send(currentPlayer.getId(), playerMovement, direction);
+
+        currentPlayerSprite.draw(batch);
+        gameContext.getWorldCamera().position.set(playerMovement, 0);
+
+        // render another players on map
+        Iterator<Player> iterator = gameContext.getAllPlayers().iterator();
+        while (iterator.hasNext()) {
+            Player player = iterator.next();
+
+            // current player already drew
+            if (player.getId() == currentPlayer.getId()) {
+                continue;
+            }
+
+            System.err.println("Draw player with ID = " + player.getId() + " on position = [" + player.getBody().getPosition().x + ", " + player.getBody().getPosition().y + "]");
+
+            Sprite playerSprite = player.draw(null);
+            playerSprite.draw(batch);
+        }
+    }
+
+    private void renderWorld() {
+        gameContext.getWorld().step(1f / 60f, 5, 8);
+    }
+
+    private void renderCamera() {
+        gameContext.getWorldCamera().update();
     }
 
 }
