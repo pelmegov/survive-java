@@ -15,6 +15,7 @@ public class GameContext {
     private OrthographicCamera worldCamera;
 
     private List<Player> players = new ArrayList<>();
+    private Player currentPlayer;
 
     public void addPlayer(Player player) {
         players.add(player);
@@ -49,5 +50,13 @@ public class GameContext {
 
     public void setB2dr(Box2DDebugRenderer b2dr) {
         this.b2dr = b2dr;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 }

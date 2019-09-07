@@ -5,15 +5,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import ru.pelmegov.game.GameContext;
 import ru.pelmegov.game.PlayerKeyboard;
 import ru.pelmegov.game.player.Player;
 import ru.pelmegov.graphic.animation.PlayerAnimation;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
-
-import java.util.List;
 
 import static ru.pelmegov.graphic.sprite.SpriteName.GRASS_1;
 import static ru.pelmegov.graphic.sprite.SpriteName.PLAYER_1;
@@ -54,7 +52,7 @@ public class WorldRenderer implements Disposable {
         Sprite sprite = new Sprite(texture);
         SpriteContainer.getInstance().addSprite(PLAYER_1, sprite);
 
-        gameContext.addPlayer(new Player(gameContext.getWorld(), new PlayerAnimation(sprite), new PlayerKeyboard()));
+        gameContext.setCurrentPlayer(new Player(gameContext.getWorld(), new PlayerAnimation(sprite), new PlayerKeyboard()));
     }
 
     private void initializeBatches() {
@@ -70,35 +68,23 @@ public class WorldRenderer implements Disposable {
         batch.begin();
 
         renderGround();
-        renderPlayers();
+        renderCurrentPlayer();
         renderWorld();
         renderCamera();
 
         batch.end();
     }
 
+    private void renderCurrentPlayer() {
+        Player player = gameContext.getCurrentPlayer();
+        Sprite sprite = player.draw();
+        sprite.draw(batch);
+        Vector2 playerMovement = new Vector2(player.getBody().getPosition().x, player.getBody().getPosition().y);
+        gameContext.getWorldCamera().position.set(playerMovement, 0);
+    }
+
     private void renderWorld() {
         gameContext.getWorld().step(1 / 60f, 6, 5);
-    }
-
-    private void renderCamera() {
-        gameContext.getWorldCamera().update();
-    }
-
-    private void renderPlayers() {
-        List<Player> allPlayers = gameContext.getAllPlayers();
-
-        for (Player player : allPlayers) {
-            Sprite sprite = player.draw();
-            sprite.draw(batch);
-
-            Vector3 playerMovement = new Vector3(
-                    player.getBody().getPosition().x,
-                    player.getBody().getPosition().y, 0
-            );
-
-            gameContext.getWorldCamera().position.set(playerMovement);
-        }
     }
 
     private void renderGround() {
@@ -109,6 +95,10 @@ public class WorldRenderer implements Disposable {
                 sprite.draw(batch);
             }
         }
+    }
+
+    private void renderCamera() {
+        gameContext.getWorldCamera().update();
     }
 
 }
