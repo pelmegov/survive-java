@@ -6,11 +6,13 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import lombok.Data;
 import ru.pelmegov.game.PlayerKeyboard;
 import ru.pelmegov.graphic.animation.PlayerAnimation;
 
 import java.util.Random;
 
+@Data
 public class Player {
 
     public static final int PLAYER_WIDTH = 32;
@@ -50,18 +52,6 @@ public class Player {
 
         shape.dispose();
         return body;
-    }
-
-    public Body getBody() {
-        return body;
-    }
-
-    public PlayerAnimation getPlayerAnimation() {
-        return playerAnimation;
-    }
-
-    public PlayerKeyboard getPlayerKeyboard() {
-        return playerKeyboard;
     }
 
 }
