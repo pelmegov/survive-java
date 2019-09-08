@@ -27,8 +27,6 @@ data class Player(val world: World, val playerSprite: Sprite) {
         this.id = id
         this.direction = direction
         this.body = makeBody(world, position)
-        this.playerAnimation = PlayerAnimation(playerSprite)
-        this.playerKeyboard = PlayerKeyboard()
     }
 
     fun setBodyTransform(position: Vector2) {
@@ -54,7 +52,6 @@ data class Player(val world: World, val playerSprite: Sprite) {
         } else {
             def.position.set(position)
         }
-
 
         val shape = PolygonShape()
         shape.setAsBox(PLAYER_WIDTH / 2f, PLAYER_HEIGHT / 2f)

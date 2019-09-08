@@ -77,7 +77,7 @@ public class WorldRenderer implements Disposable {
         gameContext.getCurrentPlayer().prepareSprite().draw(batch);
 
         for (Player player : gameContext.getAllPlayers()) {
-            if (player.equals(gameContext.getCurrentPlayer())) {
+            if (player.getId() == gameContext.getCurrentPlayer().getId()) {
                 continue;
             }
             player.prepareSprite().draw(batch);
