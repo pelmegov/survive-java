@@ -46,6 +46,7 @@ public class GameClient {
                     if (playerExists.isPresent()) {
                         Player player = playerExists.get();
                         player.setBodyTransform(response.getPlayerMovement());
+                        player.setDirection(response.getDirection());
                         continue;
                     }
 

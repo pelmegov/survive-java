@@ -7,12 +7,10 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
-import jdk.nashorn.internal.objects.Global.println
 import ru.pelmegov.game.Direction
 import ru.pelmegov.game.PlayerKeyboard
 import ru.pelmegov.graphic.animation.PlayerAnimation
-
-import java.util.Random
+import java.util.*
 
 data class Player(val world: World, val playerSprite: Sprite) {
 
@@ -21,9 +19,9 @@ data class Player(val world: World, val playerSprite: Sprite) {
     var body: Body = makeBody(world, null)
     var playerAnimation: PlayerAnimation = PlayerAnimation(playerSprite)
     var playerKeyboard: PlayerKeyboard = PlayerKeyboard()
-    var direction: Direction = Direction.DOWN
+    var direction: Direction? = Direction.DOWN
 
-    constructor(id: Int, world: World, playerSprite: Sprite, position: Vector2, direction: Direction) : this(world, playerSprite) {
+    constructor(id: Int, world: World, playerSprite: Sprite, position: Vector2, direction: Direction?) : this(world, playerSprite) {
         this.id = id
         this.direction = direction
         this.body = makeBody(world, position)
@@ -33,11 +31,37 @@ data class Player(val world: World, val playerSprite: Sprite) {
         this.body.setTransform(position, body.angle)
     }
 
+    fun prepareCurrentUserSprite(): Sprite {
+        direction = playerKeyboard.getDirectionByPressedKey()
+        return prepareSprite()
+    }
+
     fun prepareSprite(): Sprite {
-        playerKeyboard.getDirectionKeyPressed(this)
+        executeVelocityByDirection(direction)
         val playerSprite = playerAnimation.getSprite(this.direction)
         playerSprite.setOriginBasedPosition(this.body.position.x, this.body.position.y)
         return playerSprite
+    }
+
+    private fun executeVelocityByDirection(direction: Direction?) {
+        var horizontalForce = 0f
+        var verticalForce = 0f
+
+        if (direction == Direction.LEFT) {
+            horizontalForce -= 1
+        }
+        if (direction == Direction.RIGHT) {
+            horizontalForce += 1
+        }
+        if (direction == Direction.UP) {
+            verticalForce += 1
+        }
+        if (direction == Direction.DOWN) {
+            verticalForce -= 1
+        }
+
+        body.linearVelocity =
+                Vector2(horizontalForce * PlayerAnimation.PLAYER_DEFAULT_SPEED, verticalForce * PlayerAnimation.PLAYER_DEFAULT_SPEED)
     }
 
     private fun makeBody(world: World, position: Vector2?): Body {

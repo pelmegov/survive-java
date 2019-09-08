@@ -26,15 +26,11 @@ public class PlayerAnimation {
 
     public Sprite getSprite(Direction direction) {
         stateTime += Gdx.graphics.getDeltaTime();
-
-        Animation<TextureRegion> playerAnimation;
         if (direction == null) {
-            playerAnimation = new Animation<>(0f, animateMove(Direction.DOWN));
+            return new Sprite(new Animation<>(0f, animateMove(Direction.DOWN)).getKeyFrame(stateTime, false));
         } else {
-            playerAnimation = new Animation<>(0.05f, animateMove(direction));
+            return new Sprite(new Animation<>(0.05f, animateMove(direction)).getKeyFrame(stateTime, true));
         }
-
-        return new Sprite(playerAnimation.getKeyFrame(stateTime, true));
     }
 
     private TextureRegion[] animateMove(Direction direction) {
