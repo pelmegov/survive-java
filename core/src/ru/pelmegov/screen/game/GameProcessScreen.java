@@ -12,13 +12,12 @@ import ru.pelmegov.network.GameClient;
 import ru.pelmegov.screen.AbstractScreen;
 import ru.pelmegov.screen.game.world.WorldRenderer;
 
-import static ru.pelmegov.game.player.Player.PLAYER_HEIGHT;
-import static ru.pelmegov.game.player.Player.PLAYER_WIDTH;
-
 public class GameProcessScreen extends AbstractScreen {
 
     private GameContext gameContext;
     private WorldRenderer worldRenderer;
+
+    private float delta = 0;
 
     public GameProcessScreen(GameContext gameContext) {
         this.gameContext = gameContext;
@@ -36,7 +35,15 @@ public class GameProcessScreen extends AbstractScreen {
     @Override
     public void render(float delta) {
         worldRenderer.render();
-        this.sendPlayerMovement();
+        sendPlayerInfo(delta);
+    }
+
+    private void sendPlayerInfo(float delta) {
+        this.delta += delta;
+        if (this.delta > 0.005f) {
+            this.delta = 0;
+            this.sendPlayerMovement();
+        }
     }
 
     @Override
@@ -87,7 +94,7 @@ public class GameProcessScreen extends AbstractScreen {
 
     private void sendPlayerMovement() {
         Player player = gameContext.getCurrentPlayer();
-        Vector2 playerMovement = new Vector2(player.getBody().getPosition().x - PLAYER_WIDTH, player.getBody().getPosition().y - PLAYER_HEIGHT);
+        Vector2 playerMovement = new Vector2(player.getBody().getPosition().x, player.getBody().getPosition().y);
         // send through api
         gameContext.getGameClient().send(player.getId(), playerMovement, Direction.DOWN);
     }

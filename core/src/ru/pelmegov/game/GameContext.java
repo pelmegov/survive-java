@@ -7,9 +7,7 @@ import ru.pelmegov.game.player.Player;
 import ru.pelmegov.network.GameClient;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class GameContext {
 
@@ -19,16 +17,15 @@ public class GameContext {
     private GameClient gameClient;
 
 
-    private Set<Player> players = new HashSet<>();
+    private List<Player> players = new ArrayList<>();
     private Player currentPlayer;
 
     public void addPlayer(Player player) {
-        players.remove(player);
         players.add(player);
     }
 
     public List<Player> getAllPlayers() {
-        return new ArrayList<>(players);
+        return players;
     }
 
 

@@ -13,6 +13,7 @@ import ru.pelmegov.graphic.sprite.SpriteName;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class GameClient {
@@ -39,6 +40,15 @@ public class GameClient {
                 Set<GameRequest> gameRequests = (Set<GameRequest>) object;
 
                 for (GameRequest response : gameRequests) {
+                    Optional<Player> playerExists =
+                            gameContext.getAllPlayers().stream().filter(p -> p.getId() == response.getId()).findAny();
+
+                    if (playerExists.isPresent()) {
+                        Player player = playerExists.get();
+                        player.setBodyTransform(response.getPlayerMovement());
+                        continue;
+                    }
+
                     Player player = new Player(
                             response.getId(),
                             gameContext.getWorld(),
@@ -52,6 +62,10 @@ public class GameClient {
         });
     }
 
+    public void send(int id, Vector2 playerMovement, Direction direction) {
+        client.sendTCP(new GameRequest(id, playerMovement, direction));
+    }
+
     private void registerClasses() {
         Kryo kryo = client.getKryo();
         kryo.register(Set.class);
@@ -62,7 +76,4 @@ public class GameClient {
         kryo.register(Vector2.class);
     }
 
-    public void send(int id, Vector2 playerMovement, Direction direction) {
-        client.sendTCP(new GameRequest(id, playerMovement, direction));
-    }
 }

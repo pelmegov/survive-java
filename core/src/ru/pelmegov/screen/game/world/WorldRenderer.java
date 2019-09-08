@@ -50,7 +50,9 @@ public class WorldRenderer implements Disposable {
         Sprite sprite = new Sprite(texture);
         SpriteContainer.getInstance().addSprite(PLAYER_1, sprite);
 
-        gameContext.setCurrentPlayer(new Player(gameContext.getWorld(), sprite));
+        Player currentPlayer = new Player(gameContext.getWorld(), sprite);
+        gameContext.setCurrentPlayer(currentPlayer);
+        gameContext.addPlayer(currentPlayer);
     }
 
     private void initializeBatches() {
@@ -65,13 +67,13 @@ public class WorldRenderer implements Disposable {
 
         batch.begin();
         renderGround();
-        renderPlayer();
+        renderPlayers();
         renderWorld();
         renderCamera();
         batch.end();
     }
 
-    private void renderPlayer() {
+    private void renderPlayers() {
         gameContext.getCurrentPlayer().prepareSprite().draw(batch);
 
         for (Player player : gameContext.getAllPlayers()) {

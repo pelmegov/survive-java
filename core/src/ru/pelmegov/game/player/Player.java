@@ -11,10 +11,8 @@ import ru.pelmegov.game.Direction;
 import ru.pelmegov.game.PlayerKeyboard;
 import ru.pelmegov.graphic.animation.PlayerAnimation;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Player {
 
@@ -28,8 +26,6 @@ public class Player {
     private final PlayerKeyboard playerKeyboard;
     private final Direction direction;
 
-    private static Map<Integer, Body> BODY_HOLDER = new ConcurrentHashMap<>();
-
     public Player(World world, Sprite playerSprite) {
         this.direction = null;
         this.body = makeBody(world, null);
@@ -40,27 +36,18 @@ public class Player {
     public Player(Integer id, World world, Sprite playerSprite, Vector2 position, Direction direction) {
         this.id = id;
         this.direction = direction;
-
-        if (BODY_HOLDER.containsKey(id)) {
-            this.body = BODY_HOLDER.get(id);
-            setBodyTransform(position);
-        } else {
-            this.body = makeBody(world, position);
-            setBodyTransform(position);
-            BODY_HOLDER.put(id, this.body);
-        }
-
+        this.body = makeBody(world, position);
         this.playerAnimation = new PlayerAnimation(playerSprite);
         this.playerKeyboard = new PlayerKeyboard();
     }
 
-    private void setBodyTransform(Vector2 position) {
+    public void setBodyTransform(Vector2 position) {
         this.body.setTransform(position, body.getAngle());
     }
 
     public Sprite prepareSprite() {
         Sprite playerSprite = playerAnimation.getSprite(calculateDirection());
-        playerSprite.setPosition(this.body.getPosition().x - PLAYER_WIDTH, this.body.getPosition().y - PLAYER_HEIGHT);
+        playerSprite.setOriginBasedPosition(this.body.getPosition().x, this.body.getPosition().y);
         return playerSprite;
     }
 
@@ -74,8 +61,10 @@ public class Player {
             int yPosition = new Random().nextInt(Gdx.graphics.getHeight());
             def.position.set(xPosition, yPosition);
         } else {
-            def.position.set(position.x, position.y);
+            def.position.set(position);
+            System.out.println("Make body positions = [" + position.x + ", " + position.y + "]");
         }
+
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(PLAYER_WIDTH / 2f, PLAYER_HEIGHT / 2f);
