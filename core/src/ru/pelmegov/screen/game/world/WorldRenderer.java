@@ -87,12 +87,12 @@ public class WorldRenderer implements Disposable {
 
             Sprite playerSprite = player.prepareSprite();
             playerSprite.setPosition(
-                    player.getBody().getPosition().x,
-                    player.getBody().getPosition().y);
+                    player.getBody().getPosition().x - PLAYER_WIDTH,
+                    player.getBody().getPosition().y - PLAYER_HEIGHT);
 
             System.out.println("Setting position for player with id = " + player.getId()
-                    + ", position = [" + (player.getBody().getPosition().x) + ", "
-                    + (player.getBody().getPosition().y) + "]");
+                    + ", position = [" + (player.getBody().getPosition().x - PLAYER_WIDTH) + ", "
+                    + (player.getBody().getPosition().y - PLAYER_HEIGHT) + "]");
 
             playerSprite.draw(batch);
         }
