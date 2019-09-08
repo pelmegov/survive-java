@@ -1,42 +1,39 @@
-package ru.pelmegov.game;
+package ru.pelmegov.game
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.physics.box2d.Body
+import ru.pelmegov.game.Direction.*
+import ru.pelmegov.game.player.Player
 
-import static ru.pelmegov.graphic.animation.PlayerAnimation.PLAYER_DEFAULT_SPEED;
+import ru.pelmegov.graphic.animation.PlayerAnimation.PLAYER_DEFAULT_SPEED
 
-public class PlayerKeyboard {
+class PlayerKeyboard {
 
-    public Direction getDirectionKeyPressed(Body player) {
-        Direction direction = null;
-
-        int horizontalForce = 0;
-        int verticalForce = 0;
+    fun getDirectionKeyPressed(player: Player) {
+        var horizontalForce = 0f
+        var verticalForce = 0f
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            horizontalForce -= 1;
-            direction = Direction.LEFT;
+            horizontalForce -= 1
+            player.direction = LEFT
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            horizontalForce += 1;
-            direction = Direction.RIGHT;
+            horizontalForce += 1
+            player.direction = RIGHT
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            verticalForce += 1;
-            direction = Direction.UP;
+            verticalForce += 1
+            player.direction = UP
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            verticalForce -= 1;
-            direction = Direction.DOWN;
+            verticalForce -= 1
+            player.direction = DOWN
         }
 
-        player.setLinearVelocity(
+        player.body.setLinearVelocity(
                 horizontalForce * PLAYER_DEFAULT_SPEED,
                 verticalForce * PLAYER_DEFAULT_SPEED
-        );
-
-        return direction;
+        )
     }
-
 }

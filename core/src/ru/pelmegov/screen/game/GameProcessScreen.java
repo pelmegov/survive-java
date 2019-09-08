@@ -96,7 +96,7 @@ public class GameProcessScreen extends AbstractScreen {
         Player player = gameContext.getCurrentPlayer();
         Vector2 playerMovement = new Vector2(player.getBody().getPosition().x, player.getBody().getPosition().y);
         // send through api
-        gameContext.getGameClient().send(player.getId(), playerMovement, Direction.DOWN);
+        gameContext.getGameClient().send(player.getId(), playerMovement, player.getDirection());
     }
 
 }
