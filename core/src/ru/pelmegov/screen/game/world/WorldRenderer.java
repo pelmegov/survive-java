@@ -8,11 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import ru.pelmegov.game.GameContext;
-import ru.pelmegov.game.PlayerKeyboard;
 import ru.pelmegov.game.player.Player;
-import ru.pelmegov.graphic.animation.PlayerAnimation;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
 
+import static ru.pelmegov.game.player.Player.PLAYER_HEIGHT;
+import static ru.pelmegov.game.player.Player.PLAYER_WIDTH;
 import static ru.pelmegov.graphic.sprite.SpriteName.GRASS_1;
 import static ru.pelmegov.graphic.sprite.SpriteName.PLAYER_1;
 import static ru.pelmegov.util.Constant.TILE_SIZE_PIXELS;
@@ -52,7 +52,7 @@ public class WorldRenderer implements Disposable {
         Sprite sprite = new Sprite(texture);
         SpriteContainer.getInstance().addSprite(PLAYER_1, sprite);
 
-        gameContext.setCurrentPlayer(new Player(gameContext.getWorld(), new PlayerAnimation(sprite), new PlayerKeyboard()));
+        gameContext.setCurrentPlayer(new Player(gameContext.getWorld(), sprite));
     }
 
     private void initializeBatches() {
@@ -66,21 +66,36 @@ public class WorldRenderer implements Disposable {
         batch.setProjectionMatrix(gameContext.getWorldCamera().combined);
 
         batch.begin();
-
         renderGround();
-        renderCurrentPlayer();
+        renderPlayer();
         renderWorld();
         renderCamera();
-
         batch.end();
     }
 
-    private void renderCurrentPlayer() {
-        Player player = gameContext.getCurrentPlayer();
-        Sprite sprite = player.draw();
-        sprite.draw(batch);
-        Vector2 playerMovement = new Vector2(player.getBody().getPosition().x, player.getBody().getPosition().y);
-        gameContext.getWorldCamera().position.set(playerMovement, 0);
+    private void renderPlayer() {
+        Player currentPlayer = gameContext.getCurrentPlayer();
+
+        Sprite currentPlayerSprite = currentPlayer.prepareSprite();
+        currentPlayerSprite.setPosition(
+                currentPlayer.getBody().getPosition().x - PLAYER_WIDTH,
+                currentPlayer.getBody().getPosition().y - PLAYER_HEIGHT);
+        currentPlayerSprite.draw(batch);
+
+        for (Player player : gameContext.getAllPlayers()) {
+            if (player.equals(currentPlayer)) continue;
+
+            Sprite playerSprite = player.prepareSprite();
+            playerSprite.setPosition(
+                    player.getBody().getPosition().x,
+                    player.getBody().getPosition().y);
+
+            System.out.println("Setting position for player with id = " + player.getId()
+                    + ", position = [" + (player.getBody().getPosition().x) + ", "
+                    + (player.getBody().getPosition().y) + "]");
+
+            playerSprite.draw(batch);
+        }
     }
 
     private void renderWorld() {
@@ -98,6 +113,10 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderCamera() {
+        Player player = gameContext.getCurrentPlayer();
+        Vector2 playerMovement = new Vector2(player.getBody().getPosition().x, player.getBody().getPosition().y);
+
+        gameContext.getWorldCamera().position.set(playerMovement, 0);
         gameContext.getWorldCamera().update();
     }
 

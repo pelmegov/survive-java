@@ -5,7 +5,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import ru.pelmegov.game.Direction;
 import ru.pelmegov.game.GameContext;
+import ru.pelmegov.game.player.Player;
+import ru.pelmegov.network.GameClient;
 import ru.pelmegov.screen.AbstractScreen;
 import ru.pelmegov.screen.game.world.WorldRenderer;
 
@@ -24,11 +27,13 @@ public class GameProcessScreen extends AbstractScreen {
         initializeWorldRenderer();
         initializeCamera();
         initializeInputManagers();
+        initializeNetwork();
     }
 
     @Override
     public void render(float delta) {
         worldRenderer.render();
+        this.sendPlayerMovement();
     }
 
     @Override
@@ -71,6 +76,17 @@ public class GameProcessScreen extends AbstractScreen {
     }
 
     private void initializeInputManagers() {
+    }
+
+    private void initializeNetwork() {
+        gameContext.setGameClient(new GameClient(gameContext));
+    }
+
+    private void sendPlayerMovement() {
+        Player player = gameContext.getCurrentPlayer();
+        Vector2 playerMovement = new Vector2(player.getBody().getPosition().x, player.getBody().getPosition().y);
+        // send through api
+        gameContext.getGameClient().send(player.getId(), playerMovement, Direction.DOWN);
     }
 
 }
