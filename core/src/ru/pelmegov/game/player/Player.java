@@ -43,10 +43,10 @@ public class Player {
 
         if (BODY_HOLDER.containsKey(id)) {
             this.body = BODY_HOLDER.get(id);
-            this.body.setTransform(position, body.getAngle());
+            setBodyTransform(position);
         } else {
             this.body = makeBody(world, position);
-            this.body.setTransform(position, body.getAngle());
+            setBodyTransform(position);
             BODY_HOLDER.put(id, this.body);
         }
 
@@ -54,14 +54,14 @@ public class Player {
         this.playerKeyboard = new PlayerKeyboard();
     }
 
+    private void setBodyTransform(Vector2 position) {
+        this.body.setTransform(position, body.getAngle());
+    }
+
     public Sprite prepareSprite() {
-        Direction direction;
-        if (this.direction == null) {
-            direction = playerKeyboard.getDirectionKeyPressed(this.body);
-        } else {
-            direction = this.direction;
-        }
-        return playerAnimation.getSprite(direction);
+        Sprite playerSprite = playerAnimation.getSprite(calculateDirection());
+        playerSprite.setPosition(this.body.getPosition().x - PLAYER_WIDTH, this.body.getPosition().y - PLAYER_HEIGHT);
+        return playerSprite;
     }
 
     private Body makeBody(World world, Vector2 position) {
@@ -74,7 +74,7 @@ public class Player {
             int yPosition = new Random().nextInt(Gdx.graphics.getHeight());
             def.position.set(xPosition, yPosition);
         } else {
-            def.position.set(position);
+            def.position.set(position.x, position.y);
         }
 
         PolygonShape shape = new PolygonShape();
@@ -85,6 +85,16 @@ public class Player {
 
         shape.dispose();
         return body;
+    }
+
+    private Direction calculateDirection() {
+        Direction direction;
+        if (this.direction == null) {
+            direction = playerKeyboard.getDirectionKeyPressed(this.body);
+        } else {
+            direction = this.direction;
+        }
+        return direction;
     }
 
     public Body getBody() {

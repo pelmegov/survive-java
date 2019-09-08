@@ -11,8 +11,6 @@ import ru.pelmegov.game.GameContext;
 import ru.pelmegov.game.player.Player;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
 
-import static ru.pelmegov.game.player.Player.PLAYER_HEIGHT;
-import static ru.pelmegov.game.player.Player.PLAYER_WIDTH;
 import static ru.pelmegov.graphic.sprite.SpriteName.GRASS_1;
 import static ru.pelmegov.graphic.sprite.SpriteName.PLAYER_1;
 import static ru.pelmegov.util.Constant.TILE_SIZE_PIXELS;
@@ -74,27 +72,14 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderPlayer() {
-        Player currentPlayer = gameContext.getCurrentPlayer();
-
-        Sprite currentPlayerSprite = currentPlayer.prepareSprite();
-        currentPlayerSprite.setPosition(
-                currentPlayer.getBody().getPosition().x - PLAYER_WIDTH,
-                currentPlayer.getBody().getPosition().y - PLAYER_HEIGHT);
-        currentPlayerSprite.draw(batch);
+        gameContext.getCurrentPlayer().prepareSprite().draw(batch);
 
         for (Player player : gameContext.getAllPlayers()) {
-            if (player.equals(currentPlayer)) continue;
-
-            Sprite playerSprite = player.prepareSprite();
-            playerSprite.setPosition(
-                    player.getBody().getPosition().x - PLAYER_WIDTH,
-                    player.getBody().getPosition().y - PLAYER_HEIGHT);
-
-            System.out.println("Setting position for player with id = " + player.getId()
-                    + ", position = [" + (player.getBody().getPosition().x - PLAYER_WIDTH) + ", "
-                    + (player.getBody().getPosition().y - PLAYER_HEIGHT) + "]");
-
-            playerSprite.draw(batch);
+            // we already drew current player
+            if (player.equals(gameContext.getCurrentPlayer())) {
+                continue;
+            }
+            player.prepareSprite().draw(batch);
         }
     }
 
