@@ -25,7 +25,7 @@ public class GameContext {
     }
 
     public List<Player> getAllPlayers() {
-        return players;
+        return new ArrayList<>(players);
     }
 
 

@@ -2,6 +2,7 @@ package ru.pelmegov.game.ammunition;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import ru.pelmegov.game.GameContext;
 
 import java.util.ArrayList;
@@ -20,9 +21,17 @@ public class BulletHolder {
                 int touchY = Gdx.input.getY();
                 Vector2 clickedPosition = new Vector2(touchX, touchY);
 
-                float playerX = gameContext.getCurrentPlayer().getBody().getPosition().x;
-                float playerY = gameContext.getCurrentPlayer().getBody().getPosition().y;
-                Vector2 playerPosition = new Vector2(playerX, playerY);
+                // revert top left corner for Y to bottom left corner
+                Vector3 unproject = gameContext.getWorldCamera().unproject(
+                        new Vector3(clickedPosition.x, clickedPosition.y, 0)
+                );
+                clickedPosition = new Vector2(unproject.x, unproject.y);
+
+                Vector2 playerPosition = new Vector2(
+                        gameContext.getCurrentPlayer().getBody().getPosition().x,
+                        gameContext.getCurrentPlayer().getBody().getPosition().y);
+
+
 
                 bullets.add(new Bullet(playerPosition, clickedPosition));
             }

@@ -1,28 +1,28 @@
 package ru.pelmegov.game.ammunition;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
 public class Bullet {
 
-    public static final int BULLET_VELOCITY = 500;
+    public static final int BULLET_VELOCITY = 10;
 
     private final Vector2 bulletPosition;
     private final Vector2 mousePosition;
 
+    private final double xVelocity;
+    private final double yVelocity;
+
     public Bullet(Vector2 bulletStartPosition, Vector2 mousePosition) {
         this.bulletPosition = bulletStartPosition;
-        this.mousePosition = mousePosition.nor();
+        this.mousePosition = mousePosition;
+        float length = (float) Math.sqrt((mousePosition.x - bulletPosition.x) * (mousePosition.x - bulletPosition.x) + (mousePosition.y - bulletPosition.y) * (mousePosition.y - bulletPosition.y));
+        xVelocity = (mousePosition.x - bulletPosition.x) / length * (float) BULLET_VELOCITY;
+        yVelocity = (mousePosition.y - bulletPosition.y) / length * (float) BULLET_VELOCITY;
     }
 
-    public void update() {
-        bulletPosition.x += BULLET_VELOCITY * mousePosition.x * Gdx.graphics.getDeltaTime();
-        bulletPosition.y += BULLET_VELOCITY * mousePosition.y * Gdx.graphics.getDeltaTime();
-    }
-
-    public Vector2 getBulletPosition() {
+    public Vector2 update() {
+        bulletPosition.x += xVelocity;
+        bulletPosition.y += yVelocity;
         return bulletPosition;
     }
 }
