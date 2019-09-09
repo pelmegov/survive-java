@@ -8,11 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import ru.pelmegov.game.GameContext;
+import ru.pelmegov.game.ammunition.Bullet;
 import ru.pelmegov.game.player.Player;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
 
-import static ru.pelmegov.graphic.sprite.SpriteName.GRASS_1;
-import static ru.pelmegov.graphic.sprite.SpriteName.PLAYER_1;
+import static ru.pelmegov.game.ammunition.BulletHolder.getBullets;
+import static ru.pelmegov.graphic.sprite.SpriteName.*;
 import static ru.pelmegov.util.Constant.TILE_SIZE_PIXELS;
 
 public class WorldRenderer implements Disposable {
@@ -37,6 +38,7 @@ public class WorldRenderer implements Disposable {
     private void initializeSprites() {
         initializeGroundSprites();
         initializePlayerSprites();
+        initializeAmmunitionSprites();
     }
 
     private void initializeGroundSprites() {
@@ -55,6 +57,12 @@ public class WorldRenderer implements Disposable {
         gameContext.addPlayer(currentPlayer);
     }
 
+    private void initializeAmmunitionSprites() {
+        Texture texture = new Texture("graphic/weapon/m4-bullet.png");
+        Sprite sprite = new Sprite(texture);
+        SpriteContainer.getInstance().addSprite(BULLET, sprite);
+    }
+
     private void initializeBatches() {
         batch = new SpriteBatch();
     }
@@ -68,9 +76,17 @@ public class WorldRenderer implements Disposable {
         batch.begin();
         renderGround();
         renderPlayers();
+        renderBullets();
         renderWorld();
         renderCamera();
         batch.end();
+    }
+
+    private void renderBullets() {
+        for (Bullet bullet : getBullets(gameContext)) {
+            bullet.update();
+            batch.draw(SpriteContainer.getInstance().getSprite(BULLET), bullet.getBulletPosition().x, bullet.getBulletPosition().y);
+        }
     }
 
     private void renderPlayers() {
