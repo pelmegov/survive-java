@@ -37,27 +37,29 @@ public class GameClient {
         }
         client.addListener(new Listener() {
             public void received(Connection connection, Object object) {
-                Set<GameRequest> gameRequests = (Set<GameRequest>) object;
+                if (object instanceof Set) {
+                    Set<GameRequest> gameRequests = (Set<GameRequest>) object;
 
-                for (GameRequest response : gameRequests) {
-                    Optional<Player> playerExists =
-                            gameContext.getAllPlayers().stream().filter(p -> p.getId() == response.getId()).findAny();
+                    for (GameRequest response : gameRequests) {
+                        Optional<Player> playerExists =
+                                gameContext.getAllPlayers().stream().filter(p -> p.getId() == response.getId()).findAny();
 
-                    if (playerExists.isPresent()) {
-                        Player player = playerExists.get();
-                        player.setBodyTransform(response.getPlayerMovement());
-                        player.setDirection(response.getDirection());
-                        continue;
+                        if (playerExists.isPresent()) {
+                            Player player = playerExists.get();
+                            player.setBodyTransform(response.getPlayerMovement());
+                            player.setDirection(response.getDirection());
+                            continue;
+                        }
+
+                        Player player = new Player(
+                                response.getId(),
+                                gameContext.getWorld(),
+                                SpriteContainer.getInstance().getSprite(SpriteName.PLAYER_1),
+                                response.getPlayerMovement(),
+                                response.getDirection()
+                        );
+                        gameContext.addPlayer(player);
                     }
-
-                    Player player = new Player(
-                            response.getId(),
-                            gameContext.getWorld(),
-                            SpriteContainer.getInstance().getSprite(SpriteName.PLAYER_1),
-                            response.getPlayerMovement(),
-                            response.getDirection()
-                    );
-                    gameContext.addPlayer(player);
                 }
             }
         });

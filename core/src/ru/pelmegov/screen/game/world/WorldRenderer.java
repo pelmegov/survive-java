@@ -102,6 +102,9 @@ public class WorldRenderer implements Disposable {
 
     private void renderWorld() {
         gameContext.getWorld().step(1 / 60f, 6, 5);
+
+        // for debugging box2d
+        // gameContext.getB2dr().render(gameContext.getWorld(), gameContext.getWorldCamera().combined);
     }
 
     private void renderGround() {
