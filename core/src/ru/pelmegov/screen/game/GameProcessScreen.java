@@ -6,21 +6,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import ru.pelmegov.game.GameContext;
-import ru.pelmegov.game.player.Player;
+import ru.pelmegov.game.model.player.Player;
 import ru.pelmegov.network.GameClient;
 import ru.pelmegov.screen.AbstractScreen;
 import ru.pelmegov.screen.game.world.WorldRenderer;
 
 public class GameProcessScreen extends AbstractScreen {
 
-    private GameContext gameContext;
     private WorldRenderer worldRenderer;
-
     private float delta = 0;
-
-    public GameProcessScreen(GameContext gameContext) {
-        this.gameContext = gameContext;
-    }
 
     @Override
     public void show() {
@@ -66,12 +60,12 @@ public class GameProcessScreen extends AbstractScreen {
     }
 
     private void initializeWorld2dBox() {
-        gameContext.setWorld(new World(new Vector2(0f, 0f), false));
-        gameContext.setB2dr(new Box2DDebugRenderer());
+        GameContext.world = new World(new Vector2(0f, 0f), false);
+        GameContext.b2dr = new Box2DDebugRenderer();
     }
 
     private void initializeWorldRenderer() {
-        worldRenderer = new WorldRenderer(gameContext);
+        worldRenderer = new WorldRenderer();
     }
 
     private void initializeCamera() {
@@ -80,21 +74,22 @@ public class GameProcessScreen extends AbstractScreen {
         worldCamera.zoom = 1f;
         worldCamera.update();
 
-        gameContext.setWorldCamera(worldCamera);
+        GameContext.worldCamera = worldCamera;
     }
 
     private void initializeInputManagers() {
+
     }
 
     private void initializeNetwork() {
-        gameContext.setGameClient(new GameClient(gameContext));
+        GameContext.gameClient = new GameClient();
     }
 
     private void sendPlayerMovement() {
-        Player player = gameContext.getCurrentPlayer();
+        Player player = GameContext.currentPlayer;
         Vector2 playerMovement = new Vector2(player.getBody().getPosition().x, player.getBody().getPosition().y);
         // send through api
-        gameContext.getGameClient().send(player.getId(), playerMovement, player.getDirection());
+        GameContext.gameClient.send(player.getId(), playerMovement, player.getDirection());
     }
 
 }

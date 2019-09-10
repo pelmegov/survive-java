@@ -1,4 +1,4 @@
-package ru.pelmegov.game.ammunition;
+package ru.pelmegov.game.model.ammunition;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -13,7 +13,7 @@ public class BulletHolder {
     private static List<Bullet> bullets = new ArrayList<>();
     private static float allowBullet = 0;
 
-    public static List<Bullet> getBullets(GameContext gameContext) {
+    public static List<Bullet> getBullets() {
         if (Gdx.input.isTouched()) {
             if (allowBullet > 0.2) {
                 allowBullet = 0;
@@ -22,15 +22,14 @@ public class BulletHolder {
                 Vector2 clickedPosition = new Vector2(touchX, touchY);
 
                 // revert top left corner for Y to bottom left corner
-                Vector3 unproject = gameContext.getWorldCamera().unproject(
+                Vector3 unproject = GameContext.worldCamera.unproject(
                         new Vector3(clickedPosition.x, clickedPosition.y, 0)
                 );
                 clickedPosition = new Vector2(unproject.x, unproject.y);
 
                 Vector2 playerPosition = new Vector2(
-                        gameContext.getCurrentPlayer().getBody().getPosition().x,
-                        gameContext.getCurrentPlayer().getBody().getPosition().y);
-
+                        GameContext.currentPlayer.getBody().getPosition().x,
+                        GameContext.currentPlayer.getBody().getPosition().y);
 
 
                 bullets.add(new Bullet(playerPosition, clickedPosition));

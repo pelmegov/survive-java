@@ -28,7 +28,7 @@ public class DesktopLauncher {
 
         config.backgroundFPS = 120;
         config.foregroundFPS = 120;
-        config.vSyncEnabled = true; // Warning: affects game world update rate
+        config.vSyncEnabled = false;
         return config;
     }
 

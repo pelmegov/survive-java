@@ -8,21 +8,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import ru.pelmegov.game.GameContext;
-import ru.pelmegov.game.ammunition.Bullet;
-import ru.pelmegov.game.player.Player;
+import ru.pelmegov.game.PlayerKeyboardInputProcessor;
+import ru.pelmegov.game.model.ammunition.Bullet;
+import ru.pelmegov.game.model.player.Player;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
 
-import static ru.pelmegov.game.ammunition.BulletHolder.getBullets;
+import static ru.pelmegov.game.model.ammunition.BulletHolder.getBullets;
 import static ru.pelmegov.graphic.sprite.SpriteName.*;
 import static ru.pelmegov.util.Constant.TILE_SIZE_PIXELS;
 
 public class WorldRenderer implements Disposable {
 
     private SpriteBatch batch;
-    private GameContext gameContext;
 
-    public WorldRenderer(GameContext gameContext) {
-        this.gameContext = gameContext;
+    public WorldRenderer() {
         initialize();
     }
 
@@ -33,6 +32,7 @@ public class WorldRenderer implements Disposable {
     private void initialize() {
         initializeSprites();
         initializeBatches();
+        initializeInputProcessor();
     }
 
     private void initializeSprites() {
@@ -52,9 +52,9 @@ public class WorldRenderer implements Disposable {
         Sprite sprite = new Sprite(texture);
         SpriteContainer.getInstance().addSprite(PLAYER_1, sprite);
 
-        Player currentPlayer = new Player(gameContext.getWorld(), sprite);
-        gameContext.setCurrentPlayer(currentPlayer);
-        gameContext.addPlayer(currentPlayer);
+        Player currentPlayer = new Player();
+        GameContext.currentPlayer = currentPlayer;
+        GameContext.addPlayer(currentPlayer);
     }
 
     private void initializeAmmunitionSprites() {
@@ -67,11 +67,15 @@ public class WorldRenderer implements Disposable {
         batch = new SpriteBatch();
     }
 
+    private void initializeInputProcessor() {
+        Gdx.input.setInputProcessor(new PlayerKeyboardInputProcessor(GameContext.currentPlayer));
+    }
+
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.setProjectionMatrix(gameContext.getWorldCamera().combined);
+        batch.setProjectionMatrix(GameContext.worldCamera.combined);
 
         batch.begin();
         renderGround();
@@ -80,31 +84,6 @@ public class WorldRenderer implements Disposable {
         renderWorld();
         renderCamera();
         batch.end();
-    }
-
-    private void renderBullets() {
-        for (Bullet bullet : getBullets(gameContext)) {
-            Vector2 current = bullet.update();
-            batch.draw(SpriteContainer.getInstance().getSprite(BULLET), current.x, current.y);
-        }
-    }
-
-    private void renderPlayers() {
-        gameContext.getCurrentPlayer().prepareCurrentUserSprite().draw(batch);
-
-        for (Player player : gameContext.getAllPlayers()) {
-            if (player.getId() == gameContext.getCurrentPlayer().getId()) {
-                continue;
-            }
-            player.prepareSprite().draw(batch);
-        }
-    }
-
-    private void renderWorld() {
-        gameContext.getWorld().step(1 / 60f, 6, 5);
-
-        // for debugging box2d
-        // gameContext.getB2dr().render(gameContext.getWorld(), gameContext.getWorldCamera().combined);
     }
 
     private void renderGround() {
@@ -117,12 +96,40 @@ public class WorldRenderer implements Disposable {
         }
     }
 
+    private void renderPlayers() {
+        Player currentPlayer = GameContext.currentPlayer;
+        currentPlayer.update();
+        batch.draw(currentPlayer.getSprite(), currentPlayer.getBody().getPosition().x, currentPlayer.getBody().getPosition().y);
+
+        for (Player player : GameContext.getAllPlayers()) {
+            if (player.getId().equals(currentPlayer.getId())) {
+                continue;
+            }
+            player.update();
+            batch.draw(player.getSprite(), player.getBody().getPosition().x, player.getBody().getPosition().y);
+        }
+    }
+
+    private void renderBullets() {
+        for (Bullet bullet : getBullets()) {
+            Vector2 current = bullet.update();
+            batch.draw(SpriteContainer.getInstance().getSprite(BULLET), current.x, current.y);
+        }
+    }
+
+    private void renderWorld() {
+        GameContext.world.step(1 / 60f, 6, 5);
+
+        // for debugging box2d
+        // GameContext.b2dr.render(GameContext.world, GameContext.worldCamera.combined);
+    }
+
     private void renderCamera() {
-        Player player = gameContext.getCurrentPlayer();
+        Player player = GameContext.currentPlayer;
         Vector2 playerMovement = new Vector2(player.getBody().getPosition().x, player.getBody().getPosition().y);
 
-        gameContext.getWorldCamera().position.set(playerMovement, 0);
-        gameContext.getWorldCamera().update();
+        GameContext.worldCamera.position.set(playerMovement, 0);
+        GameContext.worldCamera.update();
     }
 
 }

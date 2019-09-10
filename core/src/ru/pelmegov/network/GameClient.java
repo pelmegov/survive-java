@@ -7,9 +7,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import ru.pelmegov.game.Direction;
 import ru.pelmegov.game.GameContext;
-import ru.pelmegov.game.player.Player;
-import ru.pelmegov.graphic.sprite.SpriteContainer;
-import ru.pelmegov.graphic.sprite.SpriteName;
+import ru.pelmegov.game.model.player.Player;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -19,10 +17,8 @@ import java.util.Set;
 public class GameClient {
 
     private Client client;
-    private GameContext gameContext;
 
-    public GameClient(GameContext gameContext) {
-        this.gameContext = gameContext;
+    public GameClient() {
         init();
     }
 
@@ -42,23 +38,17 @@ public class GameClient {
 
                     for (GameRequest response : gameRequests) {
                         Optional<Player> playerExists =
-                                gameContext.getAllPlayers().stream().filter(p -> p.getId() == response.getId()).findAny();
+                                GameContext.getAllPlayers().stream().filter(p -> p.getId() == response.getId()).findAny();
 
                         if (playerExists.isPresent()) {
                             Player player = playerExists.get();
-                            player.setBodyTransform(response.getPlayerMovement());
+                            player.getBody().setTransform(response.getPlayerMovement(), player.getBody().getAngle());
                             player.setDirection(response.getDirection());
                             continue;
                         }
 
-                        Player player = new Player(
-                                response.getId(),
-                                gameContext.getWorld(),
-                                SpriteContainer.getInstance().getSprite(SpriteName.PLAYER_1),
-                                response.getPlayerMovement(),
-                                response.getDirection()
-                        );
-                        gameContext.addPlayer(player);
+                        Player player = new Player(response.getId(), response.getPlayerMovement());
+                        GameContext.addPlayer(player);
                     }
                 }
             }

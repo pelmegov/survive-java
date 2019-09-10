@@ -1,4 +1,4 @@
-package ru.pelmegov.game.ammunition;
+package ru.pelmegov.game.model.ammunition;
 
 import com.badlogic.gdx.math.Vector2;
 
