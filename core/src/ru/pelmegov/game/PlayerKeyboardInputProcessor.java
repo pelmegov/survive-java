@@ -10,35 +10,29 @@ import static ru.pelmegov.game.Direction.*;
 
 public class PlayerKeyboardInputProcessor implements InputProcessor {
 
-    private final Player player;
-
-    public PlayerKeyboardInputProcessor(Player player) {
-        this.player = player;
-    }
-
     @Override
     public boolean keyDown(int keycode) {
         float horizontalForce = 0f;
         float verticalForce = 0f;
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            player.setDirection(LEFT);
+            GameContext.currentPlayer.setDirection(LEFT);
             horizontalForce -= 1;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            player.setDirection(RIGHT);
+            GameContext.currentPlayer.setDirection(RIGHT);
             horizontalForce += 1;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            player.setDirection(UP);
+            GameContext.currentPlayer.setDirection(UP);
             verticalForce += 1;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            player.setDirection(DOWN);
+            GameContext.currentPlayer.setDirection(DOWN);
             verticalForce -= 1;
         }
 
-        player.getBody().setLinearVelocity(
+        GameContext.currentPlayer.getBody().setLinearVelocity(
                 new Vector2(horizontalForce * Player.PLAYER_DEFAULT_SPEED, verticalForce * Player.PLAYER_DEFAULT_SPEED)
         );
 
@@ -47,7 +41,8 @@ public class PlayerKeyboardInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        player.getBody().setLinearVelocity(new Vector2(0, 0));
+        GameContext.currentPlayer.getBody().setLinearVelocity(new Vector2(0, 0));
+        GameContext.currentPlayer.setDirection(null);
         return false;
     }
 

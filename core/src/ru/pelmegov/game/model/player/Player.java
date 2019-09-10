@@ -31,21 +31,18 @@ public class Player extends PhysicalObject {
     public Player(int id, Vector2 position) {
         super(id, makeBodyDefinition(position));
         this.sprite = SpriteContainer.getInstance().getSprite(SpriteName.PLAYER_1);
-        this.direction = Direction.DOWN;
         this.playerAnimation = new PlayerAnimation(sprite);
     }
 
     public Player(Vector2 position) {
         super(makeBodyDefinition(position));
         this.sprite = SpriteContainer.getInstance().getSprite(SpriteName.PLAYER_1);
-        this.direction = Direction.DOWN;
         this.playerAnimation = new PlayerAnimation(sprite);
     }
 
     public Player() {
         super(makeBodyDefinition(null));
         this.sprite = SpriteContainer.getInstance().getSprite(SpriteName.PLAYER_1);
-        this.direction = Direction.DOWN;
         this.playerAnimation = new PlayerAnimation(sprite);
     }
 

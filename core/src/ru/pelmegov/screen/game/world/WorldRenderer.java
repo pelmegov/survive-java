@@ -32,7 +32,6 @@ public class WorldRenderer implements Disposable {
     private void initialize() {
         initializeSprites();
         initializeBatches();
-        initializeInputProcessor();
     }
 
     private void initializeSprites() {
@@ -65,10 +64,6 @@ public class WorldRenderer implements Disposable {
 
     private void initializeBatches() {
         batch = new SpriteBatch();
-    }
-
-    private void initializeInputProcessor() {
-        Gdx.input.setInputProcessor(new PlayerKeyboardInputProcessor(GameContext.currentPlayer));
     }
 
     public void render() {
