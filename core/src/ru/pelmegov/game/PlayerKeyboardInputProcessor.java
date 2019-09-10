@@ -41,8 +41,28 @@ public class PlayerKeyboardInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        GameContext.currentPlayer.getBody().setLinearVelocity(new Vector2(0, 0));
-        GameContext.currentPlayer.setDirection(null);
+        Vector2 linearVelocity = GameContext.currentPlayer.getBody().getLinearVelocity();
+
+        float horizontalForce = linearVelocity.x;
+        float verticalForce = linearVelocity.y;
+
+        if (Input.Keys.LEFT == keycode) {
+            horizontalForce = 0;
+        }
+        if (Input.Keys.RIGHT == keycode) {
+            horizontalForce = 0;
+        }
+        if (Input.Keys.UP == keycode) {
+            verticalForce = 0;
+        }
+        if (Input.Keys.DOWN == keycode) {
+            verticalForce = 0;
+        }
+
+        GameContext.currentPlayer.getBody().setLinearVelocity(new Vector2(horizontalForce, verticalForce));
+        if (verticalForce == 0 && horizontalForce == 0) {
+            GameContext.currentPlayer.setDirection(null);
+        }
         return false;
     }
 
