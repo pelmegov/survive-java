@@ -8,12 +8,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import ru.pelmegov.game.GameContext;
-import ru.pelmegov.game.PlayerKeyboardInputProcessor;
 import ru.pelmegov.game.model.ammunition.Bullet;
 import ru.pelmegov.game.model.player.Player;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
 
-import static ru.pelmegov.game.model.ammunition.BulletHolder.getBullets;
 import static ru.pelmegov.graphic.sprite.SpriteName.*;
 import static ru.pelmegov.util.Constant.TILE_SIZE_PIXELS;
 
@@ -106,9 +104,9 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderBullets() {
-        for (Bullet bullet : getBullets()) {
-            Vector2 current = bullet.update();
-            batch.draw(SpriteContainer.getInstance().getSprite(BULLET), current.x, current.y);
+        for (Bullet bullet : GameContext.getAllBullets()) {
+            bullet.update();
+            batch.draw(bullet.getSprite(), bullet.getPosition().x, bullet.getPosition().y);
         }
     }
 

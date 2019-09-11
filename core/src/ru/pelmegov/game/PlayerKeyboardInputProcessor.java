@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import ru.pelmegov.game.model.ammunition.Bullet;
 import ru.pelmegov.game.model.player.Player;
 
 import static ru.pelmegov.game.Direction.*;
@@ -61,7 +62,7 @@ public class PlayerKeyboardInputProcessor implements InputProcessor {
 
         GameContext.currentPlayer.getBody().setLinearVelocity(new Vector2(horizontalForce, verticalForce));
         if (verticalForce == 0 && horizontalForce == 0) {
-            GameContext.currentPlayer.setDirection(null);
+            GameContext.currentPlayer.setDirection(GameContext.currentPlayer.getDirection());
         }
         return false;
     }
@@ -73,6 +74,7 @@ public class PlayerKeyboardInputProcessor implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        GameContext.addBullet(new Bullet(Gdx.input.getX(), Gdx.input.getY()));
         return false;
     }
 
