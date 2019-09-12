@@ -19,10 +19,9 @@ import java.util.Random;
 
 public class Player extends PhysicalObject {
 
-    public static final int PLAYER_WIDTH = 32;
-    public static final int PLAYER_HEIGHT = 24;
+    public static final int PLAYER_WIDTH = 24;
+    public static final int PLAYER_HEIGHT = 32;
     public static final int PLAYER_DEFAULT_SPEED = 100;
-
 
     private Direction direction;
     private Sprite sprite;
@@ -71,7 +70,6 @@ public class Player extends PhysicalObject {
     }
 
     public void update() {
-        sprite.setPosition(getBody().getPosition().x, getBody().getPosition().y);
         playerAnimation.update();
     }
 

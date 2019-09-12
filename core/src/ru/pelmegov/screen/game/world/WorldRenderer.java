@@ -106,7 +106,7 @@ public class WorldRenderer implements Disposable {
     private void renderBullets() {
         for (Bullet bullet : GameContext.getAllBullets()) {
             bullet.update();
-            batch.draw(bullet.getSprite(), bullet.getPosition().x, bullet.getPosition().y);
+            batch.draw(bullet.getSprite(), bullet.getBody().getPosition().x, bullet.getBody().getPosition().y);
         }
     }
 
