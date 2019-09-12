@@ -19,8 +19,8 @@ import java.util.Random;
 
 public class Player extends PhysicalObject {
 
-    public static final int PLAYER_WIDTH = 24;
-    public static final int PLAYER_HEIGHT = 32;
+    public static final int PLAYER_WIDTH = 12;
+    public static final int PLAYER_HEIGHT = 16;
     public static final int PLAYER_DEFAULT_SPEED = 100;
 
     private Direction direction;
@@ -29,12 +29,6 @@ public class Player extends PhysicalObject {
 
     public Player(int id, Vector2 position) {
         super(id, makeBodyDefinition(position));
-        this.sprite = SpriteContainer.getInstance().getSprite(SpriteName.PLAYER_1);
-        this.playerAnimation = new PlayerAnimation(sprite);
-    }
-
-    public Player(Vector2 position) {
-        super(makeBodyDefinition(position));
         this.sprite = SpriteContainer.getInstance().getSprite(SpriteName.PLAYER_1);
         this.playerAnimation = new PlayerAnimation(sprite);
     }
@@ -48,8 +42,8 @@ public class Player extends PhysicalObject {
     @Override
     protected void injectPolygonShape(Body body) {
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(PLAYER_WIDTH / 2f, PLAYER_HEIGHT / 2f);
-        body.createFixture(shape, 1.0f);
+        shape.setAsBox(PLAYER_WIDTH, PLAYER_HEIGHT);
+        body.createFixture(shape, 1f);
         shape.dispose();
     }
 

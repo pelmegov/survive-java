@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Disposable;
 import ru.pelmegov.game.GameContext;
 import ru.pelmegov.game.model.ammunition.Bullet;
@@ -51,6 +52,7 @@ public class WorldRenderer implements Disposable {
 
         Player currentPlayer = new Player();
         GameContext.currentPlayer = currentPlayer;
+        // add current player to all players for ignore on rendering
         GameContext.addPlayer(currentPlayer);
     }
 
@@ -92,21 +94,21 @@ public class WorldRenderer implements Disposable {
     private void renderPlayers() {
         Player currentPlayer = GameContext.currentPlayer;
         currentPlayer.update();
-        batch.draw(currentPlayer.getSprite(), currentPlayer.getBody().getPosition().x, currentPlayer.getBody().getPosition().y);
+        drawSpriteAndBody(currentPlayer.getSprite(), currentPlayer.getBody());
 
         for (Player player : GameContext.getAllPlayers()) {
             if (player.getId().equals(currentPlayer.getId())) {
                 continue;
             }
             player.update();
-            batch.draw(player.getSprite(), player.getBody().getPosition().x, player.getBody().getPosition().y);
+            drawSpriteAndBody(player.getSprite(), player.getBody());
         }
     }
 
     private void renderBullets() {
         for (Bullet bullet : GameContext.getAllBullets()) {
             bullet.update();
-            batch.draw(bullet.getSprite(), bullet.getBody().getPosition().x, bullet.getBody().getPosition().y);
+            drawSpriteAndBody(bullet.getSprite(), bullet.getBody());
         }
     }
 
@@ -123,6 +125,12 @@ public class WorldRenderer implements Disposable {
 
         GameContext.worldCamera.position.set(playerMovement, 0);
         GameContext.worldCamera.update();
+    }
+
+    private void drawSpriteAndBody(Sprite sprite, Body body) {
+        batch.draw(sprite,
+                body.getPosition().x - sprite.getWidth() / 2f,
+                body.getPosition().y - sprite.getHeight() / 2f);
     }
 
 }
