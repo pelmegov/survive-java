@@ -10,14 +10,12 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import ru.pelmegov.game.Direction;
-import ru.pelmegov.game.model.ammunition.Bullet;
+import ru.pelmegov.game.GameContext;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
 import ru.pelmegov.graphic.sprite.SpriteName;
 import ru.pelmegov.physic.BodyDefinitionBuilder;
 import ru.pelmegov.physic.PhysicalObject;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Player extends PhysicalObject {
@@ -30,7 +28,7 @@ public class Player extends PhysicalObject {
     private Sprite sprite;
     private PlayerAnimation playerAnimation;
 
-    private float health = 1000f;
+    private float health = 100f;
 
     public Player(int id, Vector2 position) {
         super(id, makeBodyDefinition(position));
@@ -88,6 +86,16 @@ public class Player extends PhysicalObject {
 
     public void setSprite(Sprite sprite) {
         this.sprite = sprite;
+    }
+
+    public void damage(float damage) {
+        this.health -= damage;
+        System.out.println(
+                "Player with id " + getId() + " was damaged on " + damage + " points. Current health " + this.health + " points.");
+        if (health < 0) {
+            GameContext.deletedPlayers.add(getId());
+            markToDelete();
+        }
     }
 
     private class PlayerAnimation {

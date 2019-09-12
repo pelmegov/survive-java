@@ -18,8 +18,7 @@ public class PlayerContactListener implements ContactListener {
             Player player = (Player) firstBody;
             Bullet bullet = (Bullet) secondBody;
             if (!GameContext.getPlayerBullets(player.getId()).contains(bullet)) {
-                player.markToDelete();
-                GameContext.deletedPlayers.add(player.getId());
+                player.damage(Bullet.BULLET_DAMAGE);
                 bullet.markToDelete();
             }
         }
