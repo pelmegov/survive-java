@@ -11,8 +11,10 @@ import ru.pelmegov.game.model.player.Player;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameClient {
 
@@ -42,6 +44,10 @@ public class GameClient {
 
                         if (playerExists.isPresent()) {
                             Player player = playerExists.get();
+                            GameContext.deletedPlayers.addAll(response.getDeletedUsers());
+                            if (GameContext.deletedPlayers.contains(player.getId())) {
+                                continue;
+                            }
                             player.getBody().setTransform(response.getPlayerMovement(), player.getBody().getAngle());
                             player.setDirection(response.getDirection());
                             continue;
@@ -67,6 +73,8 @@ public class GameClient {
         kryo.register(GameRequest.class);
         kryo.register(Direction.class);
         kryo.register(Vector2.class);
+        kryo.register(CopyOnWriteArrayList.class);
+        kryo.register(List.class);
     }
 
 }

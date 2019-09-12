@@ -2,7 +2,9 @@ package ru.pelmegov.network;
 
 import com.badlogic.gdx.math.Vector2;
 import ru.pelmegov.game.Direction;
+import ru.pelmegov.game.GameContext;
 
+import java.util.List;
 import java.util.Objects;
 
 public class GameRequest {
@@ -10,14 +12,17 @@ public class GameRequest {
     private int id;
     private Vector2 playerMovement;
     private Direction direction;
+    private final List<Integer> deletedUsers;
 
     public GameRequest() {
+        this.deletedUsers = GameContext.deletedPlayers;
     }
 
     public GameRequest(int id, Vector2 playerMovement, Direction direction) {
         this.id = id;
         this.playerMovement = playerMovement;
         this.direction = direction;
+        this.deletedUsers = GameContext.deletedPlayers;
     }
 
     public int getId() {
@@ -55,5 +60,9 @@ public class GameRequest {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public List<Integer> getDeletedUsers() {
+        return deletedUsers;
     }
 }

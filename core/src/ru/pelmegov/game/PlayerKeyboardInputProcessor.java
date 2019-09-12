@@ -74,7 +74,8 @@ public class PlayerKeyboardInputProcessor implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        GameContext.addBullet(new Bullet(Gdx.input.getX(), Gdx.input.getY()));
+        Bullet bullet = new Bullet(Gdx.input.getX(), Gdx.input.getY());
+        GameContext.addBullet(bullet);
         return false;
     }
 

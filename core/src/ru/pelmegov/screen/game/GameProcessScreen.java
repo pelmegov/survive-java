@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import ru.pelmegov.game.GameContext;
+import ru.pelmegov.game.PlayerContactListener;
 import ru.pelmegov.game.PlayerKeyboardInputProcessor;
 import ru.pelmegov.game.model.player.Player;
 import ru.pelmegov.network.GameClient;
@@ -23,21 +24,25 @@ public class GameProcessScreen extends AbstractScreen {
         initializeWorldRenderer();
         initializeCamera();
         initializeInputManagers();
+        initializeContactListeners();
         initializeNetwork();
     }
 
     @Override
     public void render(float delta) {
+        if (GameContext.deletedPlayers.contains(GameContext.currentPlayer.getId())) {
+            System.err.println("SORRY, YOU DIED...");
+            Gdx.app.exit();
+        }
+
         worldRenderer.render();
         sendPlayerInfo(delta);
+        GameContext.clean();
     }
 
     private void sendPlayerInfo(float delta) {
         this.delta += delta;
-        if (this.delta > 0.005f) {
-            this.delta = 0;
-            this.sendPlayerMovement();
-        }
+        this.sendPlayerMovement();
     }
 
     @Override
@@ -80,6 +85,10 @@ public class GameProcessScreen extends AbstractScreen {
 
     private void initializeInputManagers() {
         Gdx.input.setInputProcessor(new PlayerKeyboardInputProcessor());
+    }
+
+    private void initializeContactListeners() {
+        GameContext.world.setContactListener(new PlayerContactListener());
     }
 
     private void initializeNetwork() {

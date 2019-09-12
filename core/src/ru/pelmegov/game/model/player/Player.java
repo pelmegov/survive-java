@@ -10,11 +10,14 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import ru.pelmegov.game.Direction;
+import ru.pelmegov.game.model.ammunition.Bullet;
 import ru.pelmegov.graphic.sprite.SpriteContainer;
 import ru.pelmegov.graphic.sprite.SpriteName;
 import ru.pelmegov.physic.BodyDefinitionBuilder;
 import ru.pelmegov.physic.PhysicalObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Player extends PhysicalObject {
@@ -26,6 +29,8 @@ public class Player extends PhysicalObject {
     private Direction direction;
     private Sprite sprite;
     private PlayerAnimation playerAnimation;
+
+    private float health = 1000f;
 
     public Player(int id, Vector2 position) {
         super(id, makeBodyDefinition(position));

@@ -10,11 +10,14 @@ import ru.pelmegov.network.GameRequest;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameServer {
 
     private static Set<GameRequest> REQUESTS = new HashSet<>();
+    private static Set<Integer> REMOVED_PLAYERS = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
         Server server = new Server(1000000, 1000000);
@@ -26,7 +29,12 @@ public class GameServer {
             public void received(Connection connection, Object object) {
                 if (object instanceof GameRequest) {
                     REQUESTS.remove(object);
-                    REQUESTS.add((GameRequest) object);
+                    GameRequest object1 = (GameRequest) object;
+                    REMOVED_PLAYERS.addAll(object1.getDeletedUsers());
+                    REQUESTS.removeIf(request -> REMOVED_PLAYERS.contains(request.getId()));
+                    object1.getDeletedUsers().clear();
+                    object1.getDeletedUsers().addAll(REMOVED_PLAYERS);
+                    REQUESTS.add(object1);
                     connection.sendTCP(REQUESTS);
                 }
             }
@@ -41,6 +49,8 @@ public class GameServer {
         kryo.register(GameRequest.class);
         kryo.register(Direction.class);
         kryo.register(Vector2.class);
+        kryo.register(CopyOnWriteArrayList.class);
+        kryo.register(List.class);
     }
 
 }

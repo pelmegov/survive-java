@@ -15,6 +15,8 @@ import ru.pelmegov.util.GraphicUtils;
 
 public class Bullet extends PhysicalObject {
 
+    public static final int BULLET_DAMAGE = 10;
+
     public static final float BULLET_RADIUS = 4;
     public static final int BULLET_VELOCITY = 10;
 
