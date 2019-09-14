@@ -1,3 +1,3 @@
 # survive-java
 
-Java web/desctop game like survivio in space 
+Java web/desktop game like survivio in space 
