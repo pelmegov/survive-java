@@ -92,7 +92,7 @@ public class Player extends PhysicalObject {
         this.health -= damage;
         System.out.println(
                 "Player with id " + getId() + " was damaged on " + damage + " points. Current health " + this.health + " points.");
-        if (health < 0) {
+        if (health <= 0) {
             GameContext.deletedPlayers.add(getId());
             markToDelete();
         }

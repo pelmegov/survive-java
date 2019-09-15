@@ -35,7 +35,7 @@ public class GameServer {
                     object1.getDeletedUsers().clear();
                     object1.getDeletedUsers().addAll(REMOVED_PLAYERS);
                     REQUESTS.add(object1);
-                    connection.sendTCP(REQUESTS);
+                    server.sendToAllTCP(REQUESTS);
                 }
             }
         });

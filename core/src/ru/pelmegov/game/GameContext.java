@@ -63,7 +63,6 @@ public class GameContext {
                 PhysicalObject physicalObject = (PhysicalObject) data;
                 if (physicalObject.needDelete()) {
                     world.destroyBody(body);
-                    body.setUserData(null);
                 }
             }
         }
