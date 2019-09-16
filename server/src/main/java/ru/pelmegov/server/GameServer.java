@@ -16,15 +16,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameServer {
 
+    public static final int BUFFERS_SIZE = 1000000;
+    public static final int TCP_PORT = 54555;
+    public static final int UDP_PORT = 54777;
+
     private static Set<GameRequest> REQUESTS = new HashSet<>();
     private static Set<Integer> REMOVED_PLAYERS = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
-        Server server = new Server(1000000, 1000000);
+        Server server = new Server(BUFFERS_SIZE, BUFFERS_SIZE);
         registerClasses(server);
 
         server.start();
-        server.bind(54555, 54777);
+        server.bind(TCP_PORT, UDP_PORT);
         server.addListener(new Listener() {
             public void received(Connection connection, Object object) {
                 if (object instanceof GameRequest) {

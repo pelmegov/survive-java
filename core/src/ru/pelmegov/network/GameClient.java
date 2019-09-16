@@ -18,6 +18,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameClient {
 
+    public static final int BUFFERS_SIZE = 1000000;
+    public static final String HOST = "127.0.0.1";
+    public static final int TCP_PORT = 54555;
+    public static final int UDP_PORT = 54777;
+
     private Client client;
 
     public GameClient() {
@@ -25,11 +30,11 @@ public class GameClient {
     }
 
     public void init() {
-        client = new Client(1000000, 1000000);
+        client = new Client(BUFFERS_SIZE, BUFFERS_SIZE);
         registerClasses();
         client.start();
         try {
-            client.connect(Integer.MAX_VALUE, "127.0.0.1", 54555, 54777);
+            client.connect(Integer.MAX_VALUE, HOST, TCP_PORT, UDP_PORT);
         } catch (IOException e) {
             throw new IllegalStateException();
         }
