@@ -9,6 +9,7 @@ import ru.pelmegov.network.GameRequest
 
 import java.io.IOException
 import java.util.HashSet
+import java.util.concurrent.CopyOnWriteArrayList
 
 object GameServer {
     const val BUFFERS_SIZE = 1000000
@@ -50,6 +51,8 @@ object GameServer {
             register(GameRequest::class.java)
             register(Direction::class.java)
             register(Vector2::class.java)
+            register(CopyOnWriteArrayList::class.java)
+            register(List::class.java)
         }
     }
 }
