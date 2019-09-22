@@ -19,6 +19,7 @@ public class Bullet extends PhysicalObject {
 
     public static final float BULLET_RADIUS = 4;
     public static final int BULLET_VELOCITY = 10;
+    public static final float BULLET_DENSITY = 1.0f;
 
     private final Vector2 position;
 
@@ -45,7 +46,7 @@ public class Bullet extends PhysicalObject {
     protected void injectPolygonShape(Body body) {
         Shape shape = new CircleShape();
         shape.setRadius(BULLET_RADIUS);
-        body.createFixture(shape, 1.0f);
+        body.createFixture(shape, BULLET_DENSITY);
         shape.dispose();
     }
 

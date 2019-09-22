@@ -12,9 +12,9 @@ import java.util.HashSet
 import java.util.concurrent.CopyOnWriteArrayList
 
 object GameServer {
-    const val BUFFERS_SIZE = 1000000
-    const val TCP_PORT = 54555
-    const val UDP_PORT = 54777
+    private const val BUFFERS_SIZE = 1000000
+    private const val TCP_PORT = 54555
+    private const val UDP_PORT = 54777
 
     private val REQUESTS = HashSet<GameRequest>()
     private val REMOVED_PLAYERS = HashSet<Int>()

@@ -23,6 +23,7 @@ public class Player extends PhysicalObject {
     public static final int PLAYER_WIDTH = 12;
     public static final int PLAYER_HEIGHT = 16;
     public static final int PLAYER_DEFAULT_SPEED = 100;
+    public static final float PLAYER_DENSITY = 1f;
 
     private Direction direction;
     private Sprite sprite;
@@ -46,7 +47,7 @@ public class Player extends PhysicalObject {
     protected void injectPolygonShape(Body body) {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(PLAYER_WIDTH, PLAYER_HEIGHT);
-        body.createFixture(shape, 1f);
+        body.createFixture(shape, PLAYER_DENSITY);
         shape.dispose();
     }
 

@@ -18,10 +18,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameClient {
 
-    public static final int BUFFERS_SIZE = 1000000;
-    public static final String HOST = "127.0.0.1";
-    public static final int TCP_PORT = 54555;
-    public static final int UDP_PORT = 54777;
+    private static final int BUFFERS_SIZE = 1000000;
+    private static final String HOST = "127.0.0.1";
+    private static final int TCP_PORT = 54555;
+    private static final int UDP_PORT = 54777;
 
     private Client client;
 
